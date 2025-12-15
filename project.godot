@@ -1,0 +1,47 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Zero Day Orbit"
+config/version="0.1"
+run/main_scene="uid://vx4nur0eui0x"
+config/features=PackedStringArray("4.5", "C#", "Mobile")
+boot_splash/bg_color=Color(0, 0, 0, 1)
+boot_splash/show_image=false
+config/icon="res://icon.svg"
+
+[debug]
+
+settings/stdout/print_fps=true
+settings/stdout/verbose_stdout=true
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+
+[dotnet]
+
+project/assembly_name="Zero Day Orbit"
+
+[input_devices]
+
+virtual_controller/ios/enable_controller=false
+virtual_controller/ios/enable_left_thumbstick=true
+virtual_controller/ios/enable_right_thumbstick=true
+virtual_controller/ios/enable_button_a=true
+virtual_controller/ios/enable_button_b=true
+virtual_controller/ios/enable_button_x=true
+virtual_controller/ios/enable_button_y=true
+
+[rendering]
+
+renderer/rendering_method="mobile"

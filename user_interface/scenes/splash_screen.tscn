@@ -1,0 +1,71 @@
+[gd_scene load_steps=8 format=3 uid="uid://vx4nur0eui0x"]
+
+[ext_resource type="Script" uid="uid://cmr6unceatq3v" path="res://user_interface/scenes/SplashScreen.cs" id="1_lnqkp"]
+[ext_resource type="Shader" uid="uid://cglwn8c0qk7ft" path="res://shaders/stars.gdshader" id="2_lnqkp"]
+[ext_resource type="PackedScene" uid="uid://cjjoqwqgxp34t" path="res://models/station/space_station.glb" id="3_3pl4f"]
+[ext_resource type="PackedScene" uid="uid://bm1gsqgwa4c5o" path="res://models/earth/earth.glb" id="4_earth"]
+[ext_resource type="PackedScene" uid="uid://dl483gwryhkuu" path="res://models/sun/sun.glb" id="5_rcdwp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3pl4f"]
+shader = ExtResource("2_lnqkp")
+shader_parameter/fade_alpha = 0.0
+shader_parameter/time_scale = 1.0
+shader_parameter/star_count = 200
+shader_parameter/star_size = 1.5
+shader_parameter/twinkle_speed = 1.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_u25am"]
+viewport_path = NodePath("SubViewport")
+
+[node name="SplashScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lnqkp")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="TextureRect_Stars" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_3pl4f")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="World3D" type="Node3D" parent="SubViewport"]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/World3D"]
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/World3D"]
+
+[node name="EarthNode3D" parent="SubViewport/World3D" instance=ExtResource("4_earth")]
+
+[node name="StationNode3D" parent="SubViewport/World3D" instance=ExtResource("3_3pl4f")]
+
+[node name="SunNode3D" parent="SubViewport/World3D" instance=ExtResource("5_rcdwp")]
+
+[node name="TextureRect_3DView" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_u25am")
