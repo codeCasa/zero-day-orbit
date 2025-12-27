@@ -1,29 +1,29 @@
-[gd_scene load_steps=7 format=3 uid="uid://vx4nur0eui0x"]
+[gd_scene load_steps=7 format=3 uid="uid://cpr4ad75swf25"]
 
-[ext_resource type="Script" uid="uid://cmr6unceatq3v" path="res://user_interface/scenes/SplashScreen.cs" id="1_lnqkp"]
-[ext_resource type="Shader" uid="uid://cglwn8c0qk7ft" path="res://shaders/stars.gdshader" id="2_lnqkp"]
-[ext_resource type="PackedScene" uid="uid://cjjoqwqgxp34t" path="res://models/station/space_station.glb" id="3_3pl4f"]
-[ext_resource type="PackedScene" uid="uid://bm1gsqgwa4c5o" path="res://models/earth/earth.glb" id="4_earth"]
+[ext_resource type="Script" uid="uid://cb2erafx2usnl" path="res://user_interface/scenes/TitleScreen.cs" id="1_4iufc"]
+[ext_resource type="Shader" uid="uid://cglwn8c0qk7ft" path="res://shaders/stars.gdshader" id="2_mc6j1"]
+[ext_resource type="PackedScene" uid="uid://bm1gsqgwa4c5o" path="res://models/earth/earth.glb" id="3_afmba"]
+[ext_resource type="PackedScene" uid="uid://cjjoqwqgxp34t" path="res://models/station/space_station.glb" id="4_yev2e"]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3pl4f"]
-shader = ExtResource("2_lnqkp")
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fkdkp"]
+shader = ExtResource("2_mc6j1")
 shader_parameter/fade_alpha = 0.0
 shader_parameter/time_scale = 1.0
 shader_parameter/star_count = 200
 shader_parameter/star_size = 1.5
 shader_parameter/twinkle_speed = 1.5
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_u25am"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_k4b8b"]
 viewport_path = NodePath("SubViewport")
 
-[node name="SplashScreen" type="Control"]
+[node name="TitleScreen" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_lnqkp")
+script = ExtResource("1_4iufc")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -35,7 +35,7 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="TextureRect_Stars" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_3pl4f")
+material = SubResource("ShaderMaterial_fkdkp")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,9 +54,9 @@ current = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewport/World3D"]
 
-[node name="EarthNode3D" parent="SubViewport/World3D" instance=ExtResource("4_earth")]
+[node name="EarthNode3D" parent="SubViewport/World3D" instance=ExtResource("3_afmba")]
 
-[node name="StationNode3D" parent="SubViewport/World3D" instance=ExtResource("3_3pl4f")]
+[node name="StationNode3D" parent="SubViewport/World3D" instance=ExtResource("4_yev2e")]
 
 [node name="TextureRect_3DView" type="TextureRect" parent="."]
 layout_mode = 1
@@ -65,4 +65,4 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("ViewportTexture_u25am")
+texture = SubResource("ViewportTexture_k4b8b")

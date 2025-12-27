@@ -2,8 +2,8 @@ shader_type canvas_item;
 
 uniform float fade_alpha : hint_range(0.0, 1.0) = 0.0;
 uniform float time_scale : hint_range(0.1, 5.0) = 1.0;
-uniform int star_count : hint_range(50, 500) = 200;
-uniform float star_size : hint_range(0.5, 3.0) = 1.5;
+uniform int star_count : hint_range(50, 500) = 350;
+uniform float star_size : hint_range(0.5, 3.0) = 2.2;
 uniform float twinkle_speed : hint_range(0.5, 3.0) = 1.5;
 
 // Simple hash function for pseudo-random numbers
@@ -36,12 +36,12 @@ float get_star(vec2 uv, float time_offset) {
 				float dist = length(offset);
 				
 				// Star brightness with twinkle
-				float base_brightness = hash(neighbor + vec2(2.0, 2.0)) * 0.5 + 0.5;
+				float base_brightness = hash(neighbor + vec2(2.0, 2.0)) * 0.7 + 0.6;
 				float twinkle_offset = hash(neighbor + vec2(3.0, 3.0)) * 6.28;
 				float twinkle = sin(TIME * twinkle_speed * time_scale + twinkle_offset) * 0.3 + 0.7;
 				
-				// Star glow
-				float star = exp(-dist * 100.0 / star_size) * base_brightness * twinkle;
+				// Star glow with increased intensity
+				float star = exp(-dist * 80.0 / star_size) * base_brightness * twinkle;
 				star_value = max(star_value, star);
 			}
 		}
@@ -51,13 +51,13 @@ float get_star(vec2 uv, float time_offset) {
 }
 
 void fragment() {
-	vec2 uv = UV * vec2(20.0, 12.0); // Scale for star distribution
+	vec2 uv = UV * vec2(25.0, 15.0); // Increased scale for more stars
 	
 	float stars = get_star(uv, TIME * time_scale);
 	
-	// Create star color with slight blue/white variation
-	vec3 star_color = vec3(0.9 + stars * 0.1, 0.9 + stars * 0.1, 1.0);
+	// Create star color with slight blue/white variation and increased brightness
+	vec3 star_color = vec3(0.95 + stars * 0.05, 0.95 + stars * 0.05, 1.0);
 	
-	// Apply fade alpha from C# code
-	COLOR = vec4(star_color * stars * fade_alpha, fade_alpha * stars);
+	// Apply fade alpha from C# code with boosted intensity
+	COLOR = vec4(star_color * stars * fade_alpha * 1.3, fade_alpha * stars);
 }
