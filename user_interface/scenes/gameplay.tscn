@@ -1,0 +1,283 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Scenes/GameRoot.cs" id="1_game_root"]
+[ext_resource type="Script" path="res://Scripts/Scenes/SpaceEnvironmentController.cs" id="2_space_env"]
+[ext_resource type="PackedScene" path="res://models/earth/earth.glb" id="3_earth"]
+[ext_resource type="Shader" path="res://shaders/stars.gdshader" id="4_stars"]
+[ext_resource type="Script" path="res://Scripts/UI/DebugHudController.cs" id="5_debug_hud"]
+[ext_resource type="Script" path="res://Scripts/UI/PauseMenuController.cs" id="6_pause_menu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1"]
+shader = ExtResource("4_stars")
+shader_parameter/fade_alpha = 1.0
+shader_parameter/star_count = 200
+shader_parameter/star_size = 1.5
+shader_parameter/twinkle_speed = 1.5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="Environment" id="Environment_1"]
+ambient_light_source = 2
+ambient_light_color = Color(0.05, 0.05, 0.12, 1)
+ambient_light_energy = 0.15
+
+[node name="Gameplay" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_game_root")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="TextureRect_Stars" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_1")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1920, 1080)
+
+[node name="World3D" type="Node3D" parent="SubViewport"]
+script = ExtResource("2_space_env")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewport/World3D"]
+environment = SubResource("Environment_1")
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport/World3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+current = true
+fov = 70.0
+
+[node name="Sun" type="DirectionalLight3D" parent="SubViewport/World3D"]
+rotation_degrees = Vector3(-45, 10, 0)
+light_color = Color(1, 0.98, 0.9, 1)
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Earth" parent="SubViewport/World3D" instance=ExtResource("3_earth")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="TextureRect_3DView" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_1")
+
+[node name="DebugCanvas" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="DebugPanel" type="PanelContainer" parent="DebugCanvas"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 476.0
+offset_bottom = 322.0
+
+[node name="MarginContainer" type="MarginContainer" parent="DebugCanvas/DebugPanel"]
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="DebugLabel" type="RichTextLabel" parent="DebugCanvas/DebugPanel/MarginContainer"]
+custom_minimum_size = Vector2(440, 280)
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+selection_enabled = false
+context_menu_enabled = false
+text = "Simulation initializing..."
+
+[node name="DebugHud" type="Control" parent="DebugCanvas"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1220.0
+offset_top = 16.0
+offset_right = 1900.0
+offset_bottom = 520.0
+script = ExtResource("5_debug_hud")
+
+[node name="Panel" type="PanelContainer" parent="DebugCanvas/DebugHud"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="DebugCanvas/DebugHud/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="VBox" type="VBoxContainer" parent="DebugCanvas/DebugHud/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PhaseLabel" type="Label" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+text = "DAYLIGHT"
+
+[node name="OrbitLabel" type="Label" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Orbit 0%  Stability 100%"
+
+[node name="BatteryBar" type="ProgressBar" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="BatteryLabel" type="Label" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Battery 100%"
+
+[node name="Controls" type="HBoxContainer" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ToggleBarsButton" type="Button" parent="DebugCanvas/DebugHud/Panel/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Mini Bars: ON"
+
+[node name="ToggleColorBarsButton" type="Button" parent="DebugCanvas/DebugHud/Panel/Margin/VBox/Controls"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+text = "Color Bars: ON"
+
+[node name="ModuleButtons" type="VBoxContainer" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="UpgradeSummaryLabel" type="Label" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Selected: None"
+
+[node name="UpgradeControls" type="HBoxContainer" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PrevUpgradeButton" type="Button" parent="DebugCanvas/DebugHud/Panel/Margin/VBox/UpgradeControls"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Prev"
+
+[node name="NextUpgradeButton" type="Button" parent="DebugCanvas/DebugHud/Panel/Margin/VBox/UpgradeControls"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "Next"
+
+[node name="ApplyUpgradeButton" type="Button" parent="DebugCanvas/DebugHud/Panel/Margin/VBox/UpgradeControls"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+text = "Apply"
+
+[node name="UpgradeAppliedLabel" type="Label" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Applied: 0  Latest: None"
+
+[node name="ModulesLabel" type="RichTextLabel" parent="DebugCanvas/DebugHud/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(640, 250)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+context_menu_enabled = false
+text = "[b]Systems[/b]"
+
+[node name="PauseMenu" type="Control" parent="DebugCanvas"]
+visible = false
+process_mode = 2
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("6_pause_menu")
+
+[node name="ColorRect" type="ColorRect" parent="DebugCanvas/PauseMenu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="PanelContainer" parent="DebugCanvas/PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -160.0
+offset_right = 200.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="DebugCanvas/PauseMenu/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBox" type="VBoxContainer" parent="DebugCanvas/PauseMenu/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Resume"
+
+[node name="SlotInput" type="LineEdit" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+layout_mode = 2
+placeholder_text = "Optional slot id (blank = auto slot)"
+
+[node name="SaveButton" type="Button" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Save Game"
+
+[node name="ExitButton" type="Button" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Exit to Main Menu"
+
+[node name="StatusLabel" type="Label" parent="DebugCanvas/PauseMenu/Panel/Margin/VBox"]
+layout_mode = 2
+autowrap_mode = 2

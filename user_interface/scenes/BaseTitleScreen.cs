@@ -270,7 +270,7 @@ public abstract partial class BaseTitleScreen : Control
 		if (_elapsedTime >= TitleSlideStart && _elapsedTime < TitleSlideEnd)
 		{
 			float slideProgress = (_elapsedTime - TitleSlideStart) / (TitleSlideEnd - TitleSlideStart);
-			float smoothProgress = SmoothStep(0.0f, 1.0f, slideProgress);
+			float smoothProgress = ApplyTitleSlideEasing(slideProgress);
 			
 			Vector3 startPos = GetTitleStartPosition();
 			Vector3 endPos = GetTitleEndPosition();
@@ -366,5 +366,10 @@ public abstract partial class BaseTitleScreen : Control
 		t = Mathf.Clamp(t, 0.0f, 1.0f);
 		t = t * t * (3.0f - 2.0f * t);
 		return Mathf.Lerp(from, to, t);
+	}
+
+	protected virtual float ApplyTitleSlideEasing(float t)
+	{
+		return SmoothStep(0.0f, 1.0f, t);
 	}
 }
